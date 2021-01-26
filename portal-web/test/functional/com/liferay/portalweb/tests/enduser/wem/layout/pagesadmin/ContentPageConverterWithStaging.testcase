@@ -7,13 +7,32 @@ definition {
 
 	setUp {
 		TestCase.setUpPortalInstance();
-
+		
 		User.firstLoginPG();
-
+		
 		JSONGroup.addGroup(groupName = "Test Site Name");
-
+		
+		JSONLayout.addPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Test Page Name");
+		
+		JSONLayout.addWidgetToPublicLayout(
+			groupName = "Test Site Name",
+			layoutName = "Test Page Name",
+			widgetName = "Asset Publisher");
+		
+		SitePages.openPagesAdmin(siteURLKey = "Test Site Name");
+		
+		SitePages.gotoPageMenuItem(
+			menuItem = "Convert to content page...",
+			pageName = "Test Page Name");
+		
+		Pause(locator1 = "3000");
+		
+		PageEditor.assertFragmentSidebarLoaded();
+		
 		Staging.openStagingAdmin(siteURLKey = "test-site-name");
-
+		
 		Staging.activateStagingCP(siteName = "Test Site Name");
 	}
 
@@ -34,8 +53,20 @@ definition {
 	test ViewContentPageInLiveAfterConvertingAndPublishingWidgetPage {
 		property portal.acceptance = "false";
 
-		// TODO LPS-98327 ViewContentPageInLiveAfterConvertingAndPublishingWidgetPage pending implementation
-
+		ProductMenu.gotoPortlet(
+			category = "Site Builder",
+			portlet = "Pages");
+		
+		SitePages.gotoPageMenuItem(
+			menuItem = "Edit Conversion Draft",
+			pageName = "Test Page Name");
+		
+		Button.clickPublish();
+		
+		AssertElementPresent(
+			key_pageName = "Test Page Name",
+			key_pageType = "Content Page",
+			locator1 = "SitePages#LIST_GROUP_ITEM_PAGE_TYPE");
 	}
 
 	@description = "This is a test for LPS-98327. When a widget page is converted to a content page and the content page is published, the content page has the original plid identifier."
